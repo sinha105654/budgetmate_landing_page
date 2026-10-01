@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BudgetMate AI — Your money, itemized and understood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F8F6F0;
+    --paper-dim: #F1EEE4;
+    --ink: #1C2B2A;
+    --ink-soft: #48534F;
+    --ledger: #2F5D50;
+    --ledger-dark: #1F4038;
+    --amber: #C08B2E;
+    --rule: #D8D3C4;
+    --rule-strong: #B9B29B;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ---------- Header / register head ---------- */
+
+  header.masthead {
+    padding: 40px 0 0;
+  }
+
+  .masthead-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand span { color: var(--ledger); }
+
+  .masthead-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0 0 20px;
+    max-width: 12ch;
+  }
+
+  .hero .sub {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 32px;
+  }
+
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--ledger);
+    color: var(--paper);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 13px 26px;
+    text-decoration: none;
+    border: 1.5px solid var(--ledger);
+  }
+
+  .btn-primary:hover { background: var(--ledger-dark); border-color: var(--ledger-dark); }
+
+  .cta-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Hero shot: the ledger card ---------- */
+
+  .ledger-card {
+    margin-top: 48px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 0;
+    max-width: 480px;
+  }
+
+  .ledger-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1.5px solid var(--ink);
+    background: var(--paper-dim);
+  }
+
+  .ledger-card-head .name {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .ledger-card-head .month {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .ledger-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 14px;
+  }
+
+  .ledger-line:last-child { border-bottom: none; }
+
+  .ledger-line .desc { color: var(--ink); }
+  .ledger-line .tag { color: var(--ink-soft); font-size: 12px; margin-left: 8px; }
+  .ledger-line .amt { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+  .ledger-line .amt.up { color: var(--ledger); }
+  .ledger-line .amt.warn { color: var(--amber); }
+
+  .ledger-forecast {
+    padding: 14px 20px;
+    background: var(--paper-dim);
+    border-top: 1.5px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .ledger-forecast strong { color: var(--amber); font-weight: 600; }
+
+  /* ---------- Benefit summary ---------- */
+
+  .summary {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+  }
+
+  .summary .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-transform: lowercase;
+    padding-top: 4px;
+  }
+
+  .summary p {
+    font-size: 19px;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  /* ---------- Line items (features) ---------- */
+
+  .items {
+    padding: 56px 0 24px;
+  }
+
+  .items h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    margin: 0 0 8px;
+  }
+
+  .items .items-intro {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0 0 36px;
+    max-width: 50ch;
+  }
+
+  .item-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .item-row:last-child { border-bottom: 1px solid var(--rule); }
+
+  .item-row .item-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0 0 6px;
+  }
+
+  .item-row .item-desc {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0;
+    max-width: 48ch;
+  }
+
+  .item-row .item-mark {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ledger);
+    white-space: nowrap;
+    padding-top: 3px;
+  }
+
+  /* ---------- Testimonials (receipts) ---------- */
+
+  .proof {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .proof h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    margin: 0 0 32px;
+  }
+
+  .receipts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .receipt {
+    background: var(--paper-dim);
+    border: 1px dashed var(--rule-strong);
+    padding: 22px 18px;
+  }
+
+  .receipt .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.5;
+    margin: 0 0 16px;
+    color: var(--ink);
+  }
+
+  .receipt .attribution {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--rule-strong);
+    padding-top: 10px;
+  }
+
+  .receipt .attribution .who {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ---------- Closing CTA ---------- */
+
+  .close-cta {
+    padding: 56px 0 40px;
+    text-align: left;
+  }
+
+  .close-cta h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 30px;
+    max-width: 16ch;
+    margin: 0 0 24px;
+  }
+
+  /* ---------- Footer ---------- */
+
+  footer {
+    padding: 28px 0 48px;
+    border-top: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 32px; max-width: 100%; }
+    .summary { grid-template-columns: 1fr; gap: 10px; }
+    .receipts { grid-template-columns: 1fr; }
+    .item-row { grid-template-columns: 1fr; gap: 6px; }
+    .item-row .item-mark { padding-top: 0; }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ledger);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="masthead-row">
+      <div class="brand">Budget<span>Mate</span> AI</div>
+      <div class="masthead-meta">AUSTRALIA — EARLY ACCESS</div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Ahead of the cost of living, not behind it.</h1>
+    <p class="sub">Built for young Australians navigating rent, groceries and rate hikes — BudgetMate AI forecasts what's coming and coaches you toward every saving goal, instead of just reporting what you already spent.</p>
+    <div class="cta-row">
+      <a href="#" class="btn-primary">Join the waitlist</a>
+      <span class="cta-note">Early access opens soon in Australia — no card required.</span>
+    </div>
+
+    <div class="ledger-card" aria-label="Sample BudgetMate AI dashboard">
+      <div class="ledger-card-head">
+        <span class="name">Your Budget</span>
+        <span class="month mono">SEPTEMBER</span>
+      </div>
+      <div class="ledger-line">
+        <span class="desc">Rent <span class="tag">recurring</span></span>
+        <span class="amt">$1,450.00</span>
+      </div>
+      <div class="ledger-line">
+        <span class="desc">Groceries <span class="tag">this week</span></span>
+        <span class="amt">$96.40</span>
+      </div>
+      <div class="ledger-line">
+        <span class="desc">Savings goal — Japan trip <span class="tag">on track</span></span>
+        <span class="amt up">+$210.00</span>
+      </div>
+      <div class="ledger-line">
+        <span class="desc">Streaming subscriptions <span class="tag">3 active</span></span>
+        <span class="amt warn">$41.97</span>
+      </div>
+      <div class="ledger-forecast">
+        Forecast: <strong>tight week ahead</strong> — a $220 bill lands Thursday. (Example forecast.)
+      </div>
+    </div>
+  </section>
+
+  <section class="summary">
+    <span class="label">the pitch</span>
+    <p>"Your bank app tells you where your money went last month. BudgetMate AI tells you where it's headed next — and gives you time to change course before rent, bills or a rate rise catches you out."</p>
+  </section>
+
+  <section class="items">
+    <h2>What's in the ledger</h2>
+    <p class="items-intro">Three things do the work most people put off doing themselves.</p>
+
+    <div class="item-row">
+      <div>
+        <p class="item-name">AI Budget Planner</p>
+        <p class="item-desc">Builds a realistic monthly budget from your actual income and spending — not a template you have to force your life into.</p>
+      </div>
+      <span class="item-mark mono">AUTO-BUILT</span>
+    </div>
+
+    <div class="item-row">
+      <div>
+        <p class="item-name">AI Spending Forecast</p>
+        <p class="item-desc">Estimates your spending for the month from your daily average, so you can see a tight month coming.</p>
+      </div>
+      <span class="item-mark mono">MONTH FORECAST</span>
+    </div>
+
+    <div class="item-row">
+      <div>
+        <p class="item-name">AI Savings Coach</p>
+        <p class="item-desc">Nudges you toward your actual goals — a trip, an emergency fund, a deposit — with advice sized to what you can really spare.</p>
+      </div>
+      <span class="item-mark mono">GOAL-LINKED</span>
+    </div>
+
+    <div class="item-row">
+      <div>
+        <p class="item-name">Type-to-log</p>
+        <p class="item-desc">Type "spent 12 on sport" and the AI fills in the entry for you to confirm. Bank connections are planned for later.</p>
+      </div>
+      <span class="item-mark mono">AI-ASSISTED</span>
+    </div>
+  </section>
+
+  <section class="proof">
+    <h2>Where we are today</h2>
+    <div class="receipts">
+      <div class="receipt">
+        <p class="quote">A working prototype is built: monthly budgets, a spending forecast, a daily calendar and an AI savings coach.</p>
+        <div class="attribution"><span class="who">Built</span> — 15 automated tests passing</div>
+      </div>
+      <div class="receipt">
+        <p class="quote">Next, we are interviewing 15 to 20 students and early-career workers about how they budget.</p>
+        <div class="attribution"><span class="who">Next</span> — validation interviews</div>
+      </div>
+      <div class="receipt">
+        <p class="quote">Then a closed beta with 50 to 100 people from the Melbourne and Deakin community.</p>
+        <div class="attribution"><span class="who">Then</span> — local beta</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close-cta">
+    <h2>Balance your month before it starts.</h2>
+    <div class="cta-row">
+      <a href="#" class="btn-primary">Join the waitlist</a>
+      <span class="cta-note">Free during early access.</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>BudgetMate AI — SIT726, Deakin University</span>
+    <span>Prepared by Yousuf Sinha — s226032987</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
